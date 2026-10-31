@@ -11,6 +11,7 @@ Requirements: Docker with Compose v2.
 ```bash
 docker compose up --build -d api        # builds the image, runs migrations once, starts the API on :3000
 docker compose run --rm test            # runs the RSpec suite against a separate test database
+docker compose down                     # stop and remove the containers; the database volume is kept
 ```
 
 The `migrate` container creates the schema and seeds the three firms from the specification (plus one demo API key per firm), then exits; `api` starts only after it succeeds.
