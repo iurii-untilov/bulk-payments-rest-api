@@ -18,3 +18,5 @@ test:
 production:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "bulk_payments_production") %>
+  # Without a schema file db:migrate runs every migration on a fresh database, including the seed data migration.
+  schema_dump: false
