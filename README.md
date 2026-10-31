@@ -148,6 +148,7 @@ I checked this manually against the running stack: 10 parallel $1,000 payments f
 ### Logging
 
 Standard Rails tagged logger to stdout; level via `RAILS_LOG_LEVEL` (default `info` in production):
+
 - `debug`: validation error details.
 - `info`: accepted batches (payer id, count, total cents) and idempotent replays.
 - `warn`: every 4xx with its code.
@@ -156,6 +157,7 @@ Standard Rails tagged logger to stdout; level via `RAILS_LOG_LEVEL` (default `in
 ### Testing
 
 `docker compose run --rm test` runs 98 examples covering:
+
 - money parsing edge cases;
 - the validation contract;
 - API key authentication;
@@ -179,7 +181,7 @@ Lint and security: `bin/rubocop`, `bin/brakeman`.
 
 ## Issues I ran into
 
-- **Rails 8.1 `db:migrate` loads `schema.rb` on a fresh database** instead of running the migrations. That marks every migration as applied, so the seed-data migration was silently skipped and the API returned 401 for the demo keys. The fix is `schema_dump: false` for production in `config/database.yml`, which makes production always build the database from the migrations. The test database still loads `schema.rb`; tests create their own data with factories.
+- **Rails 8.1** `db:migrate` **loads** `schema.rb` **on a fresh database** instead of running the migrations. That marks every migration as applied, so the seed-data migration was silently skipped and the API returned 401 for the demo keys. The fix is `schema_dump: false` for production in `config/database.yml`, which makes production always build the database from the migrations. The test database still loads `schema.rb`; tests create their own data with factories.
 - **A corporate TLS-inspecting proxy** broke `gem`/`bundle` downloads inside containers. The proxy's root CA can be supplied through the git-ignored `certs/` folder.
 - **The host only has Ruby 2.6**, so the app was generated and all tooling runs inside the `ruby:3.4` image.
 - **Replayed responses list JSON keys in a different order** than the original response, because the body is stored as `jsonb`. The JSON is semantically identical.
@@ -210,6 +212,6 @@ Lint and security: `bin/rubocop`, `bin/brakeman`.
 
 ## Two quick questions
 
-**How much time did you spend on this task?** _TODO_
+**How much time did you spend on this task?** Less than 3h
 
-**How proud are you of your work?** _TODO_
+**How proud are you of your work?** Good enough
