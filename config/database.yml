@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV["DB_PASSWORD"] %>
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "bulk_payments_development") %>
+
+test:
+  <<: *default
+  database: bulk_payments_test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "bulk_payments_production") %>

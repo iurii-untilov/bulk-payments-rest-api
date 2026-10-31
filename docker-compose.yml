@@ -1,0 +1,66 @@
+x-app-env: &app-env
+  DB_HOST: db
+  DB_USER: bulk_payments
+  DB_PASSWORD: bulk_payments
+  DB_NAME: bulk_payments_production
+  SECRET_KEY_BASE: local-docker-compose-secret-key-base-not-for-real-deployments
+  RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
+  RAILS_MAX_THREADS: 5
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bulk_payments
+      POSTGRES_PASSWORD: bulk_payments
+      POSTGRES_DB: bulk_payments_production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bulk_payments"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  migrate:
+    build:
+      context: .
+      target: production
+    image: bulk-payments:latest
+    environment: *app-env
+    command: ["./bin/rails", "db:create", "db:migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    image: bulk-payments:latest
+    environment: *app-env
+    ports:
+      - "3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:3000/up"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  test:
+    build:
+      context: .
+      target: test
+    profiles: ["test"]
+    volumes:
+      - .:/rails
+    environment:
+      DB_HOST: db
+      DB_USER: bulk_payments
+      DB_PASSWORD: bulk_payments
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
