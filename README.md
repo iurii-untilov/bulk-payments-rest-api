@@ -208,7 +208,7 @@ Lint and security: `bin/rubocop`, `bin/brakeman`.
   - this README.
 - The requirements and key decisions came from me: the stack, the layering, security tied to the payer, the error-handling policy, the AI rules and the answers to the agent's design questions. The agent proposed the framework and other options, then implemented them.
 - `AGENTS.md` contains the AI rules used during development.
-- Raw, unedited chat transcripts are in `docs/ai-logs/`.
+- [`docs/ai-logs/`](docs/ai-logs/README.md) has the raw, unedited transcript (JSONL plus a verbatim Markdown rendering) and a log of my questions and decisions during the session.
 
 ## Two quick questions
 
